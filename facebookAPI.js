@@ -3,7 +3,7 @@ const request = require('request');
 const fetch = require('node-fetch');
 
 module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
-  var module = {};
+  let module = {};
 
   /*
    * Verify that the callback came from Facebook. Using the App Secret from
@@ -11,10 +11,10 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
    * callback in the x-hub-signature field, located in the header.
    */
 
-  module.senderAction = function (id, action) {
+  module.senderAction = (id, sender_action) => {
     const body = JSON.stringify({
       recipient: { id },
-      sender_action: action
+      sender_action
     });
     const qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
     return fetch('https://graph.facebook.com/me/messages?' + qs, {
@@ -32,16 +32,16 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
   };
 
   module.verifyRequestSignature = function (req, res, buf) {
-    var signature = req.headers["x-hub-signature"];
+    let signature = req.headers["x-hub-signature"];
 
     if (!signature) {
       console.error("Couldn't validate the signature.");
     } else {
-      var elements = signature.split('=');
-      var method = elements[0];
-      var signatureHash = elements[1];
+      let elements = signature.split('=');
+      let method = elements[0];
+      let signatureHash = elements[1];
 
-      var expectedHash = crypto.createHmac('sha1', FB_APP_SECRET)
+      let expectedHash = crypto.createHmac('sha1', FB_APP_SECRET)
                           .update(buf)
                           .digest('hex');
 
@@ -60,42 +60,15 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
         if (error) {
           console.log("There was an error subscribing the bot to the webhook!");
         } else {
-          var res = JSON.parse(response.body);
+          let res = JSON.parse(response.body);
           if (res.success) {
             console.log("The bot is subscribed to Facebook's webhook!");
           } else {
-            console.log("There was an error subscribing the bot to the webhook!");
+            throw new Error("There was an error subscribing the bot to the webhook!");
           }
         }
       });
   };
 
-  // Returns the id of the sender
-  module.recipientId = function (sender) {
-    const sessionId = findOrCreateSession(sender);
-    return sessions[sessionId].fbid;
-  };
-
-  module.sessionId = function (sender) {
-    return findOrCreateSession(sender);
-  };
-
   return module;
-}
-
-function findOrCreateSession(fbid) {
-  var sessionId;
-  // Let's see if we already have a session for the user fbid
-  Object.keys(sessions).forEach(k => {
-    if (sessions[k].fbid === fbid) {
-      // Yep, got it!
-      sessionId = k;
-    }
-  });
-  if (!sessionId) {
-    // No session found for user fbid, let's create a new one
-    sessionId = new Date().toISOString();
-    sessions[sessionId] = {fbid: fbid, context: {}};
-  }
-  return sessionId;
-}
+};

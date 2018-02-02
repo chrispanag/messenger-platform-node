@@ -13,6 +13,7 @@
     "dashbot": "*",
     "request": "*",
     "lodash": "*",
-    "dashbot": "*"
+    "dashbot": "*",
+    "crypto": "*"
   }
 }

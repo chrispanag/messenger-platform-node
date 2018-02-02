@@ -9,17 +9,11 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
   const api = require('./facebookAPI.js')(FB_PAGE_TOKEN, FB_APP_SECRET);
 
   // Sender Actions
-  module.startsTyping = function (id) {
-    return api.senderAction(id, "typing_on");
-  };
+  module.startsTyping = id => api.senderAction(id, "typing_on");
 
-  module.stopsTyping = function (id) {
-    return api.senderAction(id, "typing_off");
-  };
+  module.stopsTyping = id =>  api.senderAction(id, "typing_off");
 
-  module.markSeen = function (id) {
-    return api.senderAction(id, "mark_seen");
-  };
+  module.markSeen = id => api.senderAction(id, "mark_seen");
 
   // Sends a message in facebook. The message can be of any type. Either of plain text, or with an attachment or with quickreplies
   // options = {text, quickreplies, attachment, templateID}
@@ -28,7 +22,7 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
     if (typeof options === "object") {
       ({text = null, quickreplies = null, attachment = null, templateID = null, tag = null} = options);
     } else {
-      var text = options, quickreplies = null, attachment = null, templateID = null, tag = null;
+      const text = options, quickreplies = null, attachment = null, templateID = null, tag = null;
     }
     if (!id) {
       throw new Error("fbMessage: No user id is specified!");
@@ -36,7 +30,7 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
     if (!(text || attachment)) {
       throw new Error("fbMessage: No message content is specified!");
     }
-    var body = messageBuilder(id, text, quickreplies, attachment, tag); // Set the body of the message
+    const body = messageBuilder(id, text, quickreplies, attachment, tag); // Set the body of the message
     const qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
     return fetch('https://graph.facebook.com/me/messages?' + qs, {
       method: 'POST',
@@ -46,11 +40,11 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
     .then(rsp => {
       if (USE_DASHBOT) {
         const dashbot = require('dashbot')(DASHBOT_API_KEY).facebook;
-        var json = JSON.parse(body);
+        let json = JSON.parse(body);
         if (templateID) {
           json.dashbotTemplateId = templateID;
         }
-        var requestData = {
+        const requestData = {
           url: 'https://graph.facebook.com/me/messages?',
           qs,
           method: 'POST',
@@ -63,9 +57,8 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
     }).then(json => {
       if (json.error && json.error.message) {
         throw new Error(json.error.message);
-      } else {
-        return json;
       }
+      return json;
     });
   };
 
@@ -84,17 +77,16 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
   function chainPromises(delay, id, messages, i) {
     if (i == (messages.length - 1)) {
       return module.fbMessageDelay(delay, id, messages[i]);
-    } else {
-      return module.fbMessageDelay(delay, id, messages[i]).then(() => {
-        return chainPromises(delay, id, messages, i+1);
-      });
     }
+    return module.fbMessageDelay(delay, id, messages[i]).then(() => {
+      return chainPromises(delay, id, messages, i+1);
+    });
   }
 
   module.handover = (id, msg) => {
-    var body = JSON.stringify({
+    const body = JSON.stringify({
       recipient: {
-        id: id
+        id
       },
       target_app_id:263902037430900,
       metadata: msg
@@ -108,9 +100,9 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
   };
 
   module.takeThread = id => {
-    var body = JSON.stringify({
+    const body = JSON.stringify({
       recipient: {
-        id: id
+        id
       }
     });
     const qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
@@ -137,14 +129,14 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
 
   module.privateReply = (id, message) => {
     const qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
-    var body = {
+    const body = JSON.stringify({
       id,
       message
-    };
+    });
     return fetch("https://graph.facebook.com/v2.10/"+id+"/private_replies?" + qs, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(body),
+      body,
     })
     .then(rsp => rsp.json())
     .then(json => {
@@ -171,22 +163,19 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
 
   module.verifyRequestSignature = api.verifyRequestSignature;
   module.subscribeToWebhook = api.subscribeToWebhook;
-  module.recipientId = api.recipientId;
-  module.sessionId = api.sessionId;
 
   return module;
 };
 
 // Gets an array of quick replies and creates a JSON array object with them.
 function quickrepliesGen(array) {
-  var quickreplies = [];
+  let quickreplies = [];
   for (i = 0, len = array.length; i < len; i++) {
     if (array[i].payload) {
       quickreplies.push(quickreplyGen(array[i].text, array[i].payload));
     } else {
       quickreplies.push(quickreplyGen(array[i], "No Payload"));
     }
-
   }
   return quickreplies;
 }
@@ -197,19 +186,18 @@ function quickreplyGen(text, payload) {
     return {
       content_type : "location"
     };
-  } else {
-    return {
-      content_type : "text",
-      title : text,
-      payload : JSON.stringify(payload)
-    };
   }
+  return {
+    content_type : "text",
+    title : text,
+    payload : JSON.stringify(payload)
+  };
 }
 
 
 // A function to build the body of a message
 function messageBuilder(id, text, quickreplies, attachment, tag) {
-  var quick_replies = null;
+  let quick_replies = null;
   // Handle Quick Replies (Facebook Send API)
   if (quickreplies) {
     if (!Array.isArray(quickreplies)) {
@@ -225,11 +213,10 @@ function messageBuilder(id, text, quickreplies, attachment, tag) {
       },
       tag
     });
-  } else {
-    return JSON.stringify({
-      recipient: { id },
-      message: {text, quick_replies},
-      tag
-    });
   }
+  return JSON.stringify({
+    recipient: { id },
+    message: {text, quick_replies},
+    tag
+  });
 }
