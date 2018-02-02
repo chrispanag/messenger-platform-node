@@ -7,6 +7,7 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
 
   // Concealed Facebook API functions that were once created and I don't need to touch them anymore :P
   const api = require('./facebookAPI.js')(FB_PAGE_TOKEN, FB_APP_SECRET);
+  const qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
 
   // Sender Actions
   module.startsTyping = id => api.senderAction(id, "typing_on");
@@ -18,7 +19,7 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
   // Sends a message in facebook. The message can be of any type. Either of plain text, or with an attachment or with quickreplies
   // options = {text, quickreplies, attachment, templateID}
   // Quick Replies is an array of objects with the title & the payload of each quickreply
-  module.fbMessage = function (id, options) {
+  module.fbMessage = (id, options) => {
     if (typeof options === "object") {
       ({text = null, quickreplies = null, attachment = null, templateID = null, tag = null} = options);
     } else {
@@ -31,8 +32,7 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
       throw new Error("fbMessage: No message content is specified!");
     }
     const body = messageBuilder(id, text, quickreplies, attachment, tag); // Set the body of the message
-    const qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
-    return fetch('https://graph.facebook.com/me/messages?' + qs, {
+    return fetch(`https://graph.facebook.com/me/messages?${qs}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body,
@@ -83,16 +83,15 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
     });
   }
 
-  module.handover = (id, msg) => {
+  module.handover = id => {
     const body = JSON.stringify({
       recipient: {
         id
       },
-      target_app_id:263902037430900,
-      metadata: msg
+      target_app_id: 263902037430900,
+      metadata: ""
     });
-    const qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
-    return fetch('https://graph.facebook.com/v2.6/me/pass_thread_control?' + qs, {
+    return fetch(`https://graph.facebook.com/v2.6/me/pass_thread_control?${qs}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body,
@@ -105,8 +104,7 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
         id
       }
     });
-    const qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
-    return fetch('https://graph.facebook.com/v2.6/me/take_thread_control?' + qs, {
+    return fetch(`https://graph.facebook.com/v2.6/me/take_thread_control?${qs}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body,
@@ -114,8 +112,7 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
   };
 
   module.getUserData = id => {
-    const qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
-    return fetch("https://graph.facebook.com/v2.6/"+id+"?fields=first_name,last_name,profile_pic,locale,timezone,gender&" + qs, {
+    return fetch(`https://graph.facebook.com/v2.11/${id}?fields=first_name,last_name,profile_pic,locale,timezone,gender&${qs}`, {
       method: 'GET'
     })
     .then(rsp => rsp.json())
@@ -128,12 +125,11 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
   };
 
   module.privateReply = (id, message) => {
-    const qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
     const body = JSON.stringify({
       id,
       message
     });
-    return fetch("https://graph.facebook.com/v2.10/"+id+"/private_replies?" + qs, {
+    return fetch(`https://graph.facebook.com/v2.10/${id}/private_replies?${qs}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body,
@@ -148,7 +144,6 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
   };
 
   module.getMessage = id => {
-    const qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
     return fetch("https://graph.facebook.com/v2.6/"+id+"?" + qs, {
       method: 'GET'
     })

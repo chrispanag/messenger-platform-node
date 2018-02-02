@@ -1,13 +1,10 @@
 // Buttons
-function urlBtn (title, url, webview_height_ratio) {
-  if (!webview_height_ratio) {
-    webview_height_ratio = "full";
-  }
+function urlBtn (title, url, webview_height_ratio = "full") {
   return {
-    "type": "web_url",
-    "url": url,
-    "title": title,
-    "webview_height_ratio": webview_height_ratio
+    type: "web_url",
+    url,
+    title,
+    webview_height_ratio
   };
 }
 
@@ -27,18 +24,17 @@ function shareBtn (generic = null) {
         "attachment": JSON.stringify(generic)
       }
     };
-  } else {
-    return {
-      "type": "element_share"
-    };
   }
+  return {
+    "type": "element_share"
+  };
 }
 
 function postbackBtn (title, payload) {
   return {
-    "type": "postback",
-    "payload": JSON.stringify(payload),
-    "title": title,
+    type: "postback",
+    payload: JSON.stringify(payload),
+    title,
   };
 }
 
@@ -46,30 +42,30 @@ function postbackBtn (title, payload) {
 // make them manually or use the functions above
 function buttonMessage (text, buttons) {
   return {
-    "type":"template",
-      "payload":{
-        "template_type":"button",
-        "text": text,
-        "buttons": buttons
+      type: "template",
+      payload: {
+        template_type: "button",
+        text,
+        buttons
       }
   };
 }
 
-function image (image) {
+function image (url) {
   return {
-    "type":"image",
-    "payload":{
-      "url": image
+    type: "image",
+    payload: {
+      url
     }
   };
 }
 
 function cardElement ({title = null, subtitle = null, image_url = null, buttons = []}) {
   return {
-    "title": title,
-    "subtitle": subtitle,
-    "image_url": image_url,
-    "buttons": buttons
+    title,
+    subtitle,
+    image_url,
+    buttons
   };
 }
 
@@ -78,21 +74,21 @@ function listElement ({title, subtitle, image_url, action, button}) {
     button = [button];
   }
   return {
-    "title": title,
-    "image_url": image_url,
-    "subtitle": subtitle,
-    "default_action": action,
-    "buttons": button
+    title,
+    image_url,
+    subtitle,
+    default_action: action,
+    buttons: button
   };
 }
 
 // elements is an array of
 function cardMessage (elements) {
   return {
-    "type":"template",
-    "payload": {
-      "template_type":"generic",
-      "elements": elements
+    type: "template",
+    payload: {
+      template_type: "generic",
+      elements
     }
   };
 }
@@ -101,17 +97,17 @@ function listMessage (elements, button, large) {
   if (button) {
     button = [button];
   }
-  var type = "compact";
+  let type = "compact";
   if (large) {
     type = "large";
   }
   return {
-    "type": "template",
-    "payload": {
-        "template_type": "list",
-        "top_element_style": type,
-        "elements": elements,
-        "buttons": button
+    type: "template",
+    payload: {
+        template_type: "list",
+        top_element_style: type,
+        elements,
+        button
       }
   };
 }
