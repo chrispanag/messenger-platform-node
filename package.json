@@ -12,6 +12,7 @@
     "node-fetch": "*",
     "dashbot": "*",
     "request": "*",
-    "lodash": "*"
+    "lodash": "*",
+    "dashbot": "*"
   }
 }
