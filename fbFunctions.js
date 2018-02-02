@@ -176,15 +176,15 @@ function quickrepliesGen(array) {
 }
 
 // Gets the text and the payload of a quick reply and returns the json of a quickreply
-function quickreplyGen(text, payload) {
-  if (text == "send_location" && payload == "No Payload") {
+function quickreplyGen(title, payload) {
+  if (title == "send_location" && payload == "No Payload") {
     return {
       content_type : "location"
     };
   }
   return {
     content_type : "text",
-    title : text,
+    title,
     payload : JSON.stringify(payload)
   };
 }
@@ -192,6 +192,7 @@ function quickreplyGen(text, payload) {
 
 // A function to build the body of a message
 function messageBuilder(id, text, quickreplies, attachment, tag) {
+  console.log(text);
   let quick_replies = null;
   // Handle Quick Replies (Facebook Send API)
   if (quickreplies) {
