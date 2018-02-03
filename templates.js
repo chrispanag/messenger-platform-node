@@ -94,9 +94,6 @@ function cardMessage (elements) {
 }
 
 function listMessage ({elements, button, large}) {
-  if (button) {
-    button = [button];
-  }
   let type = "compact";
   if (large) {
     type = "large";
