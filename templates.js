@@ -107,7 +107,7 @@ function listMessage ({elements, button, large}) {
         template_type: "list",
         top_element_style: type,
         elements,
-        button
+        buttons: button
       }
   };
 }
