@@ -69,7 +69,7 @@ function cardElement ({title = null, subtitle = null, image_url = null, buttons 
   };
 }
 
-function listElement ({title, subtitle, image_url, action, buttons}) {
+function listElement ({title, subtitle, image_url, action = null, buttons = []}) {
   return {
     title,
     image_url,
@@ -90,7 +90,7 @@ function cardMessage (elements) {
   };
 }
 
-function listMessage ({elements, buttons, large}) {
+function listMessage ({elements, buttons, large = false}) {
   let type = "compact";
   if (large) {
     type = "large";
