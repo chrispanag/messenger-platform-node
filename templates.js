@@ -69,16 +69,13 @@ function cardElement ({title = null, subtitle = null, image_url = null, buttons 
   };
 }
 
-function listElement ({title, subtitle, image_url, action, button}) {
-  if (button) {
-    button = [button];
-  }
+function listElement ({title, subtitle, image_url, action, buttons}) {
   return {
     title,
     image_url,
     subtitle,
     default_action: action,
-    buttons: button
+    buttons
   };
 }
 
