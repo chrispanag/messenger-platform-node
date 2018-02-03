@@ -93,7 +93,7 @@ function cardMessage (elements) {
   };
 }
 
-function listMessage ({elements, button, large}) {
+function listMessage ({elements, buttons, large}) {
   let type = "compact";
   if (large) {
     type = "large";
@@ -104,7 +104,7 @@ function listMessage ({elements, button, large}) {
         template_type: "list",
         top_element_style: type,
         elements,
-        buttons: button
+        buttons
       }
   };
 }
