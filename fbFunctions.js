@@ -22,7 +22,7 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
   module.fbMessage = (id, options) => {
     let text = options, quickreplies = null, attachment = null, templateID = null, tag = null;
     if (typeof options === "object") {
-      {text = null, quickreplies = null, attachment = null, templateID = null, tag = null} = options;
+      ({text = null, quickreplies = null, attachment = null, templateID = null, tag = null}) = options;
     }
     if (!id) {
       throw new Error("fbMessage: No user id is specified!");
