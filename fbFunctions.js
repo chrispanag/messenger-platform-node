@@ -20,9 +20,9 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
   // options = {text, quickreplies, attachment, templateID}
   // Quick Replies is an array of objects with the title & the payload of each quickreply
   module.fbMessage = (id, options) => {
-    let text = options, quickreplies = null, attachment = null, templateID = null, tag = null;
-    if (typeof options === "object") {
-      ({text = null, quickreplies = null, attachment = null, templateID = null, tag = null}) = options;
+    let {text = null, quickreplies = null, attachment = null, templateID = null, tag = null} = options;
+    if (!(typeof options === "object")) {
+      text = options, quickreplies = null, attachment = null, templateID = null, tag = null;
     }
     if (!id) {
       throw new Error("fbMessage: No user id is specified!");
