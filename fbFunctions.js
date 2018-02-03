@@ -24,6 +24,7 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
     if (!(typeof options === "object")) {
       text = options, quickreplies = null, attachment = null, templateID = null, tag = null;
     }
+    console.log(attachment);
     if (!id) {
       throw new Error("fbMessage: No user id is specified!");
     }
@@ -77,9 +78,7 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
     if (i == (messages.length - 1)) {
       return module.fbMessageDelay(delay, id, messages[i]);
     }
-    return module.fbMessageDelay(delay, id, messages[i]).then(() => {
-      return chainPromises(delay, id, messages, i+1);
-    });
+    return module.fbMessageDelay(delay, id, messages[i]).then(() => chainPromises(delay, id, messages, i+1));
   }
 
   module.handover = id => {
@@ -93,7 +92,7 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
     return fetch(`https://graph.facebook.com/v2.6/me/pass_thread_control?${qs}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body,
+      body
     });
   };
 
@@ -106,7 +105,7 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
     return fetch(`https://graph.facebook.com/v2.6/me/take_thread_control?${qs}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body,
+      body
     });
   };
 
