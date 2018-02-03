@@ -2,24 +2,24 @@
 
 This is an npm module with Functions for accessing FB API (Send API mostly)
 
-### List of Functions ###
+## List of Functions ##
 
-## Send Messages ##
+### Send Messages ###
 * fbMessage(id, options);
 * fbMessageDelay(DELAY, id, options);
 * chainFbMessages(DELAY, id, array);
 
-## Comment-To-Messenger ##
+### Comment-To-Messenger ###
 * privateReply(comment_id, message);
 
-## Manipulate the typing indicator ##
+### Manipulate the typing indicator ###
 * startsTyping(id);
 * stopsTyping(id);
 * markSeen(id);
 
-## Handover Protocol ##
+### Handover Protocol ###
 * handover(id);
 * takeThread(id);
 
-## Get user data ##
+### Get user data ###
 * getUserData(id);
