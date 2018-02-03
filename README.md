@@ -6,7 +6,8 @@ This is an npm module with Functions for accessing FB API (Send API mostly)
 
 ### Send Messages ###
 * fbMessage(id, options);
-  > Sends a message to a user
+  > Sends a message to a user.
+  > The id is a PSID and options is an object that includes the actual message + its settings, tags etc.
 
 * fbMessageDelay(DELAY, id, options);
 * chainFbMessages(DELAY, id, array);
