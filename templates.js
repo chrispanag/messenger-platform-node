@@ -10,23 +10,23 @@ function urlBtn (title, url, webview_height_ratio = "full") {
 
 function callBtn (title, number) {
   return {
-    "type":"phone_number",
-    "title": title,
-    "payload": number
+    type: "phone_number",
+    title,
+    payload: number
   };
 }
 
 function shareBtn (generic = null) {
   if (generic) {
     return {
-      "type":"element_share",
-      "share_contents": {
-        "attachment": JSON.stringify(generic)
+      type: "element_share",
+      share_contents: {
+        attachment: JSON.stringify(generic)
       }
     };
   }
   return {
-    "type": "element_share"
+    type: "element_share"
   };
 }
 
