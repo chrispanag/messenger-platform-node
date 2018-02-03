@@ -93,7 +93,7 @@ function cardMessage (elements) {
   };
 }
 
-function listMessage (elements, button, large) {
+function listMessage ({elements, button, large}) {
   if (button) {
     button = [button];
   }
