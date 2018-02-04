@@ -1,11 +1,9 @@
-function webhook(messages, feed, standy) {
+function webhook(messages, feed, standy, logIncoming) {
   return (req, res) => {
     const data = req.body;
+    
     // Send message to metrics
-    if (USE_DASHBOT) {
-      const dashbot = require('dashbot')(DASHBOT_API_KEY).facebook;
-      dashbot.logIncoming(data);
-    }
+    logIncoming(data);
 
     if (data.object === 'page') {
       data.entry.forEach(entry => {
