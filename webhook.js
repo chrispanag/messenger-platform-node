@@ -61,13 +61,13 @@ function messengerWebhook({attachmentHandler, textHandler, menuHandler, getConte
           return attachmentHandler(id, messaging.message.attachments, messaging.user);
         // TEXT
         else if (messaging.message.text && !messaging.message.quick_reply)
-          return textHandler(messaging.message, sender, messaging.message.nlp, messaging.user);
+          return textHandler(messaging.message, id, messaging.message.nlp, messaging.user);
         // QUICKREPLIES
         else if (messaging.message.quick_reply) {
           const payload = messaging.message.quick_reply.payload;
           // If there is no payload send message to wit
           if (payload == "\"No Payload\"")
-            return textHandler(sender, messaging.message.text, messaging.user);
+            return textHandler(id, messaging.message.text, messaging.user);
           // If there is a payload
           return menuHandler(messaging, payload, messaging.user);
         }
