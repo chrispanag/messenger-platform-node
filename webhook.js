@@ -12,7 +12,7 @@ function webhook(messages, feed, standy) {
         // Messaging Standard Channel
         if (entry.messaging) {
           entry.messaging.forEach(e => {
-            if (messaging.recipient.id === FB_PAGE_ID) messages(e);
+            if (e.recipient.id === FB_PAGE_ID) messages(e);
           });
           return;
         }
