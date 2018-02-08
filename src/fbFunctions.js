@@ -1,6 +1,7 @@
 // Facebook Send API related modules
 const fetch = require('node-fetch');
 const promiseDelay = require('promise-delay');
+const _ = require('lodash');
 
 module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
   let module = {};
@@ -109,8 +110,10 @@ module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
     });
   };
 
-  module.getUserData = id => {
-    return fetch(`https://graph.facebook.com/v2.11/${id}?fields=first_name,last_name,profile_pic,locale,timezone,gender&${qs}`, {
+  module.getUserData = (id, fields) => {
+    let query = 'first_name,last_name,profile_pic,locale,timezone,gender';
+    if (fields) query = _.join(fields, ',');
+    return fetch(`https://graph.facebook.com/v2.11/${id}?fields=${fields}&${qs}`, {
       method: 'GET'
     })
     .then(rsp => rsp.json())
