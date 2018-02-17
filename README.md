@@ -21,7 +21,8 @@ This method is used to send multiple messages to a single user. Each message is 
     attachment,   // Object
     templateId,   // String
     tag           // String
-  }```
+  }
+  ```
 
 ### Comment-To-Messenger ###
 * #### `privateReply (comment_id, message);` ####
