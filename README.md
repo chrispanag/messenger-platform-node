@@ -77,5 +77,5 @@ Takes thread control of the user with the PSID `id`. Returns a *promise*.
 
 ## Webhook ##
 
-* `webhook (messenger, feed, standby);`
+* `webhook (messenger, FB_PAGE_ID);`
 * `messengerWebhook ({attachmentHandler, textHandler, menuHandler, getContext, isCustomerService});`

@@ -90,16 +90,15 @@ function cardMessage (elements) {
   };
 }
 
-function listMessage ({elements, buttons, large = false}) {
-  let type = "compact";
-  if (large) {
-    type = "large";
-  }
+function listMessage ({elements, buttons = [], large = false}) {
+  let top_element_style = "compact";
+  if (large)
+    top_element_style = "large";
   return {
     type: "template",
     payload: {
         template_type: "list",
-        top_element_style: type,
+        top_element_style,
         elements,
         buttons
       }

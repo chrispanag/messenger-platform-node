@@ -1,172 +1,182 @@
 // Facebook Send API related modules
 const fetch = require('node-fetch');
 const promiseDelay = require('promise-delay');
-const _ = require('lodash');
 
-module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
-  let module = {};
+const FBApi = require('./facebookAPI');
 
-  // Concealed Facebook API functions that were once created and I don't need to touch them anymore :P
-  const api = require('./facebookAPI.js')(FB_PAGE_TOKEN, FB_APP_SECRET);
-  const qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
+const defaultFieldsUserData = [
+  'first_name', 
+  'last_name', 
+  'profile_pic', 
+  'locale', 
+  'timezone', 
+  'gender'
+]
 
-  // Sender Actions
-  module.startsTyping = id => api.senderAction(id, "typing_on");
+function loggerDashbot (DASHBOT_API_KEY) {
+  const dashbot = require('dashbot')(DASHBOT_API_KEY).facebook;
 
-  module.stopsTyping = id =>  api.senderAction(id, "typing_off");
+  return (body, templateID) => {
+    if (templateID)
+      body.dashbotTemplateId = templateID;
 
-  module.markSeen = id => api.senderAction(id, "mark_seen");
-
-  // Sends a message in facebook. The message can be of any type. Either of plain text, or with an attachment or with quickreplies
-  // options = {text, quickreplies, attachment, templateID}
-  // Quick Replies is an array of objects with the title & the payload of each quickreply
-  module.fbMessage = (id, options) => {
-    let {text = null, quickreplies = null, attachment = null, templateID = null, tag = null} = options;
-    if (!(typeof options === "object")) {
-      text = options, quickreplies = null, attachment = null, templateID = null, tag = null;
-    }
-    console.log(attachment);
-    if (!id) {
-      throw new Error("fbMessage: No user id is specified!");
-    }
-    if (!(text || attachment)) {
-      throw new Error("fbMessage: No message content is specified!");
-    }
-    const body = messageBuilder(id, text, quickreplies, attachment, tag); // Set the body of the message
-    return fetch(`https://graph.facebook.com/me/messages?${qs}`, {
+    const requestData = {
+      url: 'https://graph.facebook.com/me/messages?',
+      qs: this._qs,
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body,
-    })
-    .then(rsp => {
-      if (USE_DASHBOT) {
-        const dashbot = require('dashbot')(DASHBOT_API_KEY).facebook;
-        let json = JSON.parse(body);
-        if (templateID) {
-          json.dashbotTemplateId = templateID;
-        }
-        const requestData = {
-          url: 'https://graph.facebook.com/me/messages?',
-          qs,
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          json,
-        };
-        dashbot.logOutgoing(requestData, rsp.body);
-      }
-      return rsp.json();
-    }).then(json => {
-      if (json.error && json.error.message) {
-        throw new Error(json.error.message);
-      }
-      return json;
-    });
-  };
+      json: body
+    };
+    dashbot.logOutgoing(requestData, body);
+  }
+}
 
-  module.fbMessageDelay = (delay, id, options) => {
-    return module.startsTyping(id).then(() => {
-      return promiseDelay(delay).then(() => {
-        return module.fbMessage(id, options);
-      });
-    });
-  };
+class fb extends FBApi {
+  constructor(FB_PAGE_TOKEN, FB_APP_SECRET, logger = () => null) {
+    super(FB_PAGE_TOKEN, FB_APP_SECRET);
 
-  module.chainFbMessages = (delay, id, messages) => {
-    return chainPromises(delay, id, messages, 0);
-  };
-
-  function chainPromises(delay, id, messages, i) {
-    if (i == (messages.length - 1)) {
-      return module.fbMessageDelay(delay, id, messages[i]);
-    }
-    return module.fbMessageDelay(delay, id, messages[i]).then(() => chainPromises(delay, id, messages, i+1));
+    this._logger = logger;
   }
 
-  module.handover = id => {
-    const body = JSON.stringify({
-      recipient: {
-        id
-      },
-      target_app_id: 263902037430900,
-      metadata: ""
-    });
-    return fetch(`https://graph.facebook.com/v2.6/me/pass_thread_control?${qs}`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body
-    });
-  };
+  // Typing Indicators
+  startsTyping (id) {
+    return this.senderAction(id, "typing_on");
+  }
 
-  module.takeThread = id => {
-    const body = JSON.stringify({
-      recipient: {
-        id
+  stopsTyping (id) {
+    return this.senderAction(id, "typing_off");
+  }
+
+  markSeen (id) {
+    return this.senderAction(id, "mark_seen");
+  }
+
+  /* 
+    Sends a message to the user specified by the PSID id
+    Params:
+      id: A valid user PSID
+      options: An object that defines the message sent
+      {
+        text: String,
+        quickreplies: Array,
+        attachment: Object,
+        templateID: String,
+        tag: String
       }
-    });
-    return fetch(`https://graph.facebook.com/v2.6/me/take_thread_control?${qs}`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body
-    });
-  };
+  */
+  fbMessage(id, options) {
+    let {text = null, quickreplies = null, attachment = null, templateID = null, tag = null} = options;
+    if (!(typeof options === "object"))
+      text = options, quickreplies = null, attachment = null, templateID = null, tag = null;
+      
+    if (!id)
+      throw new Error("fbMessage: No user id is specified!");
 
-  module.getUserData = (id, fields) => {
-    let query = 'first_name,last_name,profile_pic,locale,timezone,gender';
-    if (fields) query = _.join(fields, ',');
-    return fetch(`https://graph.facebook.com/v2.11/${id}?fields=${fields}&${qs}`, {
+    if (!(text || attachment))
+      throw new Error("fbMessage: No message content is specified!");
+
+    const body = messageBuilder(id, text, quickreplies, attachment, tag); // Set the body of the message
+    return this.sendAPI(body).then(this._logger(body, templateID));
+  }
+
+  /*
+    Sends a message after a delay
+  */
+  fbMessageDelay(delay, id, options) {
+    return this.startsTyping(id).then(() => {
+      return promiseDelay(delay).then(() => {
+        return this.fbMessage(id, options)
+      });
+    });
+  }
+
+  _chainPromises(delay, id, messages, i) {
+    if (i == (messages.length - 1))
+      return this.fbMessageDelay(delay, id, messages[i]);
+
+    return this.fbMessageDelay(delay, id, messages[i]).then(() => {
+      return this._chainPromises(delay, id, messages, i+1)
+    });
+  }
+
+  /*
+    Sends the messages specified by the array messages to a specific user with a delay between them
+  */
+  chainFbMessages(delay, id, messages) {
+    return this._chainPromises(delay, id, messages, 0);
+  }
+  
+  getUserData(id, fields = defaultFieldsUserData) {
+    const query = fields.join(',');
+    return fetch(`https://graph.facebook.com/v2.11/${id}?fields=${query}&${this._qs}`, {
       method: 'GET'
     })
     .then(rsp => rsp.json())
     .then(json => {
-      if (json.error && json.error.message) {
+      if (json.error && json.error.message) 
         throw new Error(json.error.message);
-      }
       return json;
     });
-  };
+  }
 
-  module.privateReply = (id, message) => {
+  privateReply(id, message) {
     const body = JSON.stringify({
       id,
       message
     });
-    return fetch(`https://graph.facebook.com/v2.10/${id}/private_replies?${qs}`, {
+    return fetch(`https://graph.facebook.com/v2.10/${id}/private_replies?${this._qs}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body,
     })
     .then(rsp => rsp.json())
     .then(json => {
-      if (json.error && json.error.message) {
+      if (json.error && json.error.message)
         throw new Error(json.error.message);
-      }
+
       return json;
     });
-  };
+  }
 
-  module.getMessage = id => {
-    return fetch("https://graph.facebook.com/v2.6/"+id+"?" + qs, {
-      method: 'GET'
-    })
-    .then(rsp => rsp.json())
-    .then(json => {
-      if (json.error && json.error.message) {
-        throw new Error(json.error.message);
+  takeThread(id) {
+    const body = JSON.stringify({
+      recipient: {
+        id
       }
-      return json;
     });
-  };
+    return fetch(`https://graph.facebook.com/v2.6/me/take_thread_control?${this._qs}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body
+    });
+  }
 
-  module.verifyRequestSignature = api.verifyRequestSignature;
-  module.subscribeToWebhook = api.subscribeToWebhook;
+  handover(id, { target_app_id = 263902037430900, metadata = "" }) {
+    const body = JSON.stringify({
+      recipient: {
+        id
+      },
+      target_app_id,
+      metadata
+    });
+    return fetch(`https://graph.facebook.com/v2.6/me/pass_thread_control?${this._qs}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body
+    });
+  }
 
-  return module;
+}
+
+module.exports = {
+  fb, 
+  loggerDashbot
 };
 
 // Gets an array of quick replies and creates a JSON array object with them.
 function quickrepliesGen(array) {
   let quickreplies = [];
-  for (i = 0, len = array.length; i < len; i++) {
+  for (let i = 0, len = array.length; i < len; i++) {
     if (array[i].payload) {
       quickreplies.push(quickreplyGen(array[i].text, array[i].payload));
     } else {
@@ -178,11 +188,11 @@ function quickrepliesGen(array) {
 
 // Gets the text and the payload of a quick reply and returns the json of a quickreply
 function quickreplyGen(title, payload) {
-  if (title == "send_location" && payload == "No Payload") {
+  if (title == "send_location" && payload == "No Payload")
     return {
       content_type : "location"
     };
-  }
+
   return {
     content_type : "text",
     title,
@@ -193,27 +203,27 @@ function quickreplyGen(title, payload) {
 
 // A function to build the body of a message
 function messageBuilder(id, text, quickreplies, attachment, tag) {
-  console.log(text);
   let quick_replies = null;
   // Handle Quick Replies (Facebook Send API)
   if (quickreplies) {
-    if (!Array.isArray(quickreplies)) {
+    if (!Array.isArray(quickreplies))
       throw new Error("fbMessage: Quickreplies is not an Array!");
-    }
+
     quick_replies = quickrepliesGen(quickreplies);
   }
-  if (attachment) {
-    return JSON.stringify({
+
+  if (attachment)
+    return {
       recipient: { id },
       message: {
         attachment: attachment,
       },
       tag
-    });
-  }
-  return JSON.stringify({
+    };
+
+  return {
     recipient: { id },
     message: {text, quick_replies},
     tag
-  });
+  };
 }

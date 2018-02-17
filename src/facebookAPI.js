@@ -1,74 +1,59 @@
 const crypto = require('crypto');
-const request = require('request');
 const fetch = require('node-fetch');
 
-module.exports = function (FB_PAGE_TOKEN, FB_APP_SECRET) {
-  let module = {};
+class FBApi {
+  // The constructor stores the FB_APP_SECRET in a private variable and also creates the qs for the requests with the FB_PAGE_TOKEN
+  constructor (FB_PAGE_TOKEN, FB_APP_SECRET) {
+    if (!FB_PAGE_TOKEN) 
+      throw new Error("No FB_PAGE_TOKEN is specified");
+    if (!FB_APP_SECRET) 
+      throw new Error("No FB_APP_SECRET is specified");
 
-  /*
-   * Verify that the callback came from Facebook. Using the App Secret from
-   * the App Dashboard, we can verify the signature that is sent with each
-   * callback in the x-hub-signature field, located in the header.
-   */
+    this._FB_APP_SECRET = FB_APP_SECRET;
+    this._qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
+  }
 
-  module.senderAction = (id, sender_action) => {
-    const body = JSON.stringify({
-      recipient: { id },
-      sender_action
-    });
-    const qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
-    return fetch('https://graph.facebook.com/me/messages?' + qs, {
+  // Method Used for all the Send API calls
+  sendAPI (options) {
+    const body = JSON.stringify(options);
+    return fetch(`https://graph.facebook.com/me/messages?${this._qs}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body,
     })
     .then(rsp => rsp.json())
     .then(json => {
-      if (json.error && json.error.message) {
+      if (json.error && json.error.message)
         throw new Error(json.error.message);
-      }
+
       return json;
     });
-  };
+  }
 
-  module.verifyRequestSignature = function (req, res, buf) {
+  senderAction (id, sender_action) {
+    const body = {
+      recipient: { id },
+      sender_action
+    }
+    return this.sendAPI(body);
+  }
+
+  verifyRequestSignature (req, res, buf) {
     let signature = req.headers["x-hub-signature"];
 
-    if (!signature) {
-      console.error("Couldn't validate the signature.");
-    } else {
-      let elements = signature.split('=');
-      let method = elements[0];
-      let signatureHash = elements[1];
+    if (!signature)
+      throw new Error("Couldn't validate the signature.");
 
-      let expectedHash = crypto.createHmac('sha1', FB_APP_SECRET)
-                          .update(buf)
-                          .digest('hex');
+    let elements = signature.split('=');
+    let signatureHash = elements[1];
 
-      if (signatureHash != expectedHash) {
-        throw new Error("Couldn't validate the request signature.");
-      }
-    }
-  };
+    let expectedHash = crypto.createHmac('sha1', this._FB_APP_SECRET)
+                      .update(buf)
+                      .digest('hex');
 
-  module.subscribeToWebhook = function () {
-    // Subscribe the app to the Webhook
-    request({
-        url: "https://graph.facebook.com/v2.6/me/subscribed_apps?access_token="+FB_PAGE_TOKEN,
-        method: 'POST',
-      }, function(error, response, body) {
-        if (error) {
-          console.log("There was an error subscribing the bot to the webhook!");
-        } else {
-          let res = JSON.parse(response.body);
-          if (res.success) {
-            console.log("The bot is subscribed to Facebook's webhook!");
-          } else {
-            throw new Error("There was an error subscribing the bot to the webhook!");
-          }
-        }
-      });
-  };
+    if (signatureHash != expectedHash)
+      throw new Error("Couldn't validate the request signature.");
+  }
+}
 
-  return module;
-};
+module.exports = FBApi;

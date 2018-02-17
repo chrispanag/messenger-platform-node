@@ -1,4 +1,4 @@
-function webhook(messages, feed, standy, logIncoming) {
+function webhook(messages, FB_PAGE_ID, logIncoming = () => null) {
   return (req, res) => {
     const data = req.body;
     
@@ -14,40 +14,24 @@ function webhook(messages, feed, standy, logIncoming) {
           });
           return;
         }
-        // Feed Changes Channel. We use that for the Comment-To-Messenger Functionality
-        if (entry.changes && ENABLE_COMMENT) {
-          entry.changes.forEach(e => feed(e.value));
-          return;
-        }
-        // Messaging Standby Channel
-        if (entry.standby) {
-          entry.standby.forEach(e => {
-            if (messaging.recipient.id === FB_PAGE_ID) standby(e);
-          });
-          return;
-        }
         // If another channel is added that it is not handled then throw an error.
         // This may result to some messages being dropped but that will be rare.
         console.log(entry);
         throw new Error("Webhook: Unknown webhook channel");
       });
-    } else {
+    } else
       // If the object sending the webhook requests is not a page
       throw new Error(`Webhook: Unknown data.object: ${data.object}`);
-    }
+      
     // We send the 200 status as fast as we can.
     res.sendStatus(200);
   };
 }
 
-function messengerWebhook({attachmentHandler, textHandler, menuHandler, getContext, isCustomerService}) {
+function messengerWebhook({attachmentHandler, textHandler, menuHandler, getContext}) {
   return data => {
     return getContext(data).then(messaging => {
       const id = messaging.sender.id;
-      if (isCustomerService(messaging)) {
-        console.log(`User: ${messaging.user.first_name} ${messaging.user.last_name} with the id: ${messaging.user.id} is Handovered!`);
-        return fb.handover(id);
-      }
       if (messaging.message) {
         // ECHOs
         if (messaging.message.is_echo) {
