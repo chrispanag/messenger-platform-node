@@ -2,6 +2,14 @@
 
 This is a NodeJS module with Functions for accessing FB API (Send API mostly)
 
+## How to get up and running ##
+1) Install the module with `npm`
+2) Require the module and construct the library
+  ```
+  const { fbApp } = require('fbLib');
+  const fb = new fbApp(FB_PAGE_TOKEN, FB_APP_SECRET, logger);
+  ```
+
 ## List of Functions ##
 
 ### Send Messages ###
