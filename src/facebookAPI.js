@@ -39,6 +39,7 @@ class FBApi {
   }
 
   verifyRequestSignature (req, res, buf) {
+    const FB_APP_SECRET = this._FB_APP_SECRET;
     let signature = req.headers["x-hub-signature"];
 
     if (!signature)
@@ -47,7 +48,7 @@ class FBApi {
     let elements = signature.split('=');
     let signatureHash = elements[1];
 
-    let expectedHash = crypto.createHmac('sha1', this._FB_APP_SECRET)
+    let expectedHash = crypto.createHmac('sha1', FB_APP_SECRET)
                       .update(buf)
                       .digest('hex');
 
