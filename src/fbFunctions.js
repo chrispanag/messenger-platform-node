@@ -31,7 +31,7 @@ function loggerDashbot (DASHBOT_API_KEY) {
   }
 }
 
-class fb extends FBApi {
+class FB extends FBApi {
   constructor(FB_PAGE_TOKEN, FB_APP_SECRET, logger = () => null) {
     super(FB_PAGE_TOKEN, FB_APP_SECRET);
 
@@ -169,7 +169,7 @@ class fb extends FBApi {
 }
 
 module.exports = {
-  fb, 
+  FB, 
   loggerDashbot
 };
 
