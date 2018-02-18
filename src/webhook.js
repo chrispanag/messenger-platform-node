@@ -46,14 +46,15 @@ function messengerWebhook({attachmentHandler, textHandler, menuHandler, getConte
         }
         // ATTACHMENTS
         if (messaging.message.attachments)
-          return attachmentHandler(id, messaging.message.attachments, messaging.user);
+          // For each attachment run the attachment handler once
+          return Promise.all(messaging.message.attachments.map(a => attachmentHandler(id, a, messaging.user)));
         // TEXT
         else if (messaging.message.text && !messaging.message.quick_reply)
           return textHandler(messaging.message, id, messaging.message.nlp, messaging.user);
         // QUICKREPLIES
         else if (messaging.message.quick_reply) {
           const payload = messaging.message.quick_reply.payload;
-          // If there is no payload send message to wit
+          // If there is no payload treat it as just text
           if (payload == "\"No Payload\"")
             return textHandler(id, messaging.message.text, messaging.user);
           // If there is a payload

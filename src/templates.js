@@ -105,13 +105,15 @@ function listMessage ({elements, buttons = [], large = false}) {
   };
 }
 
-exports.image = image;
-exports.callBtn = callBtn;
-exports.shareBtn = shareBtn;
-exports.listElement = listElement;
-exports.listMessage = listMessage;
-exports.cardElement = cardElement;
-exports.cardMessage = cardMessage;
-exports.urlBtn = urlBtn;
-exports.postbackBtn = postbackBtn;
-exports.buttonMessage = buttonMessage;
+module.exports = {
+  image,
+  callBtn,
+  shareBtn,
+  listElement,
+  listMessage,
+  cardElement,
+  cardMessage,
+  urlBtn,
+  postbackBtn,
+  buttonMessage
+}
