@@ -36,6 +36,9 @@ class FB extends FBApi {
     super(FB_PAGE_TOKEN, FB_APP_SECRET);
 
     this._logger = logger;
+    this.fbMessageDelay = this.fbMessageDelay.bind(this);
+    this.fbMessage = this.fbMessage.bind(this);
+    this.chainFbMessages = this.chainFbMessages.bind(this);
   }
 
   // Typing Indicators
