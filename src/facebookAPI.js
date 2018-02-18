@@ -13,6 +13,7 @@ class FBApi {
     this._qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
 
     this.verifyRequestSignature = this.verifyRequestSignature.bind(this);
+    this.sendAPI = this.sendAPI.bind(this);
   }
 
   // Method Used for all the Send API calls
