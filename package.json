@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "auto-bind": "^1.2.0",
+    "auto-bind-inheritance": "^1.0.6",
     "dashbot": "*",
     "node-fetch": "*",
     "promise-delay": "*"

@@ -1,7 +1,7 @@
 // Facebook Send API related modules
 const fetch = require('node-fetch');
 const promiseDelay = require('promise-delay');
-const autoBind = require('auto-bind');
+const autoBind = require('auto-bind-inheritance');
 
 const FBApi = require('./facebookAPI');
 
