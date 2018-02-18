@@ -11,6 +11,7 @@ function webhook(messages, FB_PAGE_ID, logIncoming = () => null) {
         if (entry.messaging) {
           entry.messaging.forEach(e => {
             if (e.recipient.id === FB_PAGE_ID) messages(e);
+            else console.log("Message from other page");
           });
           return;
         }
