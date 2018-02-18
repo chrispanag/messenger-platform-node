@@ -1,5 +1,3 @@
-'use strict;'
-
 const crypto = require('crypto');
 const fetch = require('node-fetch');
 
@@ -13,6 +11,8 @@ class FBApi {
 
     this._FB_APP_SECRET = FB_APP_SECRET;
     this._qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
+
+    this.verifyRequestSignature = this.verifyRequestSignature.bind(this);
   }
 
   // Method Used for all the Send API calls
@@ -41,7 +41,6 @@ class FBApi {
   }
 
   verifyRequestSignature (req, res, buf) {
-    const FB_APP_SECRET = this._FB_APP_SECRET;
     let signature = req.headers["x-hub-signature"];
 
     if (!signature)
@@ -50,7 +49,7 @@ class FBApi {
     let elements = signature.split('=');
     let signatureHash = elements[1];
 
-    let expectedHash = crypto.createHmac('sha1', FB_APP_SECRET)
+    let expectedHash = crypto.createHmac('sha1', this._FB_APP_SECRET)
                       .update(buf)
                       .digest('hex');
 
