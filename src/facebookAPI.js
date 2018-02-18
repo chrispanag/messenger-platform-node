@@ -14,6 +14,7 @@ class FBApi {
 
     this.verifyRequestSignature = this.verifyRequestSignature.bind(this);
     this.sendAPI = this.sendAPI.bind(this);
+    this.senderAction = this.senderAction.bind(this);
   }
 
   // Method Used for all the Send API calls
