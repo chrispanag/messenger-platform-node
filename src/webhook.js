@@ -1,4 +1,7 @@
-function webhook(messages, FB_PAGE_ID, logIncoming = () => null) {
+function webhook(FB_PAGE_ID, messages, logIncoming = () => null) {
+  if (!FB_PAGE_ID) 
+    throw new Error("Missing FB_PAGE_ID");
+    
   return (req, res) => {
     const data = req.body;
     
@@ -10,8 +13,10 @@ function webhook(messages, FB_PAGE_ID, logIncoming = () => null) {
         // Messaging Standard Channel
         if (entry.messaging) {
           entry.messaging.forEach(e => {
-            if (e.recipient.id === FB_PAGE_ID) messages(e);
-            else console.log("Message from other page");
+            if (e.recipient.id === FB_PAGE_ID) 
+              messages(e);
+            else 
+              console.log("Message from other page");
           });
           return;
         }
