@@ -1,6 +1,7 @@
 // Facebook Send API related modules
 const fetch = require('node-fetch');
 const promiseDelay = require('promise-delay');
+const autoBind = require('auto-bind');
 
 const FBApi = require('./facebookAPI');
 
@@ -36,9 +37,7 @@ class FB extends FBApi {
     super(FB_PAGE_TOKEN, FB_APP_SECRET);
 
     this._logger = logger;
-    this.fbMessageDelay = this.fbMessageDelay.bind(this);
-    this.fbMessage = this.fbMessage.bind(this);
-    this.chainFbMessages = this.chainFbMessages.bind(this);
+    autoBind(this);
   }
 
   // Typing Indicators

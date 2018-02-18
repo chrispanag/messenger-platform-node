@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const fetch = require('node-fetch');
+const autoBind = require('auto-bind');
 
 class FBApi {
   // The constructor stores the FB_APP_SECRET in a private variable and also creates the qs for the requests with the FB_PAGE_TOKEN
@@ -12,9 +13,7 @@ class FBApi {
     this._FB_APP_SECRET = FB_APP_SECRET;
     this._qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
 
-    this.verifyRequestSignature = this.verifyRequestSignature.bind(this);
-    this.sendAPI = this.sendAPI.bind(this);
-    this.senderAction = this.senderAction.bind(this);
+    autoBind(this);
   }
 
   // Method Used for all the Send API calls

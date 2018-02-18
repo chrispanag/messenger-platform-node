@@ -9,8 +9,9 @@
   "author": "Christos Panagiotakopoulos",
   "license": "ISC",
   "dependencies": {
-    "node-fetch": "*",
+    "auto-bind": "^1.2.0",
     "dashbot": "*",
+    "node-fetch": "*",
     "promise-delay": "*"
   }
 }
