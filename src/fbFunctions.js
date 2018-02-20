@@ -35,7 +35,7 @@ function loggerDashbot (DASHBOT_API_KEY) {
 class FB extends FBApi {
   constructor(FB_PAGE_TOKEN, FB_APP_SECRET, logger = () => null) {
     super(FB_PAGE_TOKEN, FB_APP_SECRET);
-
+    
     this._logger = logger;
     autoBind(this);
   }
@@ -67,9 +67,9 @@ class FB extends FBApi {
       }
   */
   fbMessage(id, options) {
-    let {text = null, quickreplies = null, attachment = null, templateID = null, tag = null} = options;
+    let {text = null, quickreplies = null, attachment = null, templateID = null, tag = null, notification = "REGULAR", type = "RESPONSE"} = options;
     if (!(typeof options === "object"))
-      text = options, quickreplies = null, attachment = null, templateID = null, tag = null;
+      text = options, quickreplies = null, attachment = null, templateID = null, tag = null, notification = "REGULAR", type = "RESPONSE";
       
     if (!id)
       throw new Error("fbMessage: No user id is specified!");
@@ -77,7 +77,7 @@ class FB extends FBApi {
     if (!(text || attachment))
       throw new Error("fbMessage: No message content is specified!");
 
-    const body = messageBuilder(id, text, quickreplies, attachment, tag); // Set the body of the message
+    const body = messageBuilder(id, text, quickreplies, attachment, tag, notification, type); // Set the body of the message
     return this.sendAPI(body).then(this._logger(body, templateID));
   }
 
@@ -204,7 +204,7 @@ function quickreplyGen(title, payload) {
 
 
 // A function to build the body of a message
-function messageBuilder(id, text, quickreplies, attachment, tag) {
+function messageBuilder(id, text, quickreplies, attachment, tag, notification_type = "REGULAR", messaging_type = "RESPONSE") {
   let quick_replies = null;
   // Handle Quick Replies (Facebook Send API)
   if (quickreplies) {
@@ -220,12 +220,16 @@ function messageBuilder(id, text, quickreplies, attachment, tag) {
       message: {
         attachment: attachment,
       },
+      notification_type,
+      messaging_type,
       tag
     };
 
   return {
     recipient: { id },
     message: {text, quick_replies},
+    notification_type,
+    messaging_type,
     tag
   };
 }

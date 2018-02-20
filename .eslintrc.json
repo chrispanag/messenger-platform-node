@@ -98,8 +98,9 @@
         ],
         "line-comment-position": "off",
         "linebreak-style": [
-            "error",
-            "windows"
+            "off",
+            "windows",
+            "unix"
         ],
         "lines-around-comment": "error",
         "lines-around-directive": "error",

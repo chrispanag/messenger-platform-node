@@ -1,6 +1,5 @@
 const crypto = require('crypto');
 const fetch = require('node-fetch');
-const autoBind = require('auto-bind');
 
 class FBApi {
   // The constructor stores the FB_APP_SECRET in a private variable and also creates the qs for the requests with the FB_PAGE_TOKEN
@@ -12,8 +11,6 @@ class FBApi {
 
     this._FB_APP_SECRET = FB_APP_SECRET;
     this._qs = 'access_token=' + encodeURIComponent(FB_PAGE_TOKEN);
-
-    autoBind(this);
   }
 
   // Method Used for all the Send API calls
@@ -42,15 +39,15 @@ class FBApi {
   }
 
   verifyRequestSignature (req, res, buf) {
-    let signature = req.headers["x-hub-signature"];
+    const signature = req.headers["x-hub-signature"];
 
     if (!signature)
       throw new Error("Couldn't validate the signature.");
 
-    let elements = signature.split('=');
-    let signatureHash = elements[1];
+    const elements = signature.split('=');
+    const signatureHash = elements[1];
 
-    let expectedHash = crypto.createHmac('sha1', this._FB_APP_SECRET)
+    const expectedHash = crypto.createHmac('sha1', this._FB_APP_SECRET)
                       .update(buf)
                       .digest('hex');
 
