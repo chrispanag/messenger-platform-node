@@ -60,7 +60,7 @@ function image (url) {
   };
 }
 
-function cardElement ({title = null, subtitle = null, image_url = null, buttons = []}) {
+function cardElement ({title = null, subtitle = null, image_url = null, buttons = null}) {
   return {
     title,
     subtitle,
@@ -69,7 +69,7 @@ function cardElement ({title = null, subtitle = null, image_url = null, buttons 
   };
 }
 
-function listElement ({title, subtitle, image_url, action = null, buttons = []}) {
+function listElement ({title, subtitle, image_url, action = null, buttons = null}) {
   return {
     title,
     image_url,
@@ -90,7 +90,7 @@ function cardMessage (elements) {
   };
 }
 
-function listMessage ({elements, buttons = [], large = false}) {
+function listMessage ({elements, buttons = null, large = false}) {
   let top_element_style = "compact";
   if (large)
     top_element_style = "large";
