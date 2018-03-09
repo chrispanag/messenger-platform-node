@@ -54,6 +54,7 @@ function webhook(FB_PAGE_ID, { messages = () => null, feed = () => null, standby
 }
 
 function messengerWebhook({ attachmentHandler, textHandler, menuHandler, getContext, isCustomerService = () => false, customerServiceHandler = () => null}) {
+  console.log(attachmentHandler);
   if (!attachmentHandler) 
     throw new Error("Messenger Webhook: No attachmentHandler is set");
   if (!textHandler) 
