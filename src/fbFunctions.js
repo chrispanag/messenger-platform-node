@@ -14,24 +14,6 @@ const defaultFieldsUserData = [
   'gender'
 ]
 
-function loggerDashbot (DASHBOT_API_KEY) {
-  const dashbot = require('dashbot')(DASHBOT_API_KEY).facebook;
-
-  return (body, templateID) => {
-    if (templateID)
-      body.dashbotTemplateId = templateID;
-
-    const requestData = {
-      url: 'https://graph.facebook.com/me/messages?',
-      qs: this._qs,
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      json: body
-    };
-    dashbot.logOutgoing(requestData, body);
-  }
-}
-
 class FB extends FBApi {
   constructor(FB_PAGE_TOKEN, FB_APP_SECRET, logger = () => null) {
     super(FB_PAGE_TOKEN, FB_APP_SECRET);
@@ -171,8 +153,7 @@ class FB extends FBApi {
 }
 
 module.exports = {
-  FB, 
-  loggerDashbot
+  FB
 };
 
 // Gets an array of quick replies and creates a JSON array object with them.

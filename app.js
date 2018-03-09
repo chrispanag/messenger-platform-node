@@ -1,7 +1,7 @@
-const { FB } = require('./src/fbFunctions.js');
-const t = require('./src/templates.js');
-const stickers = require('./src/stickers.js');
-const { webhook, messengerWebhook } = require('./src/webhook.js');
+const { FB } = require('./src/fbFunctions');
+const t = require('./src/templates');
+const stickers = require('./src/stickers');
+const { webhook, messengerWebhook } = require('./src/webhook');
 
 module.exports = {
   stickers,
