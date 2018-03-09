@@ -54,13 +54,13 @@ function webhook(FB_PAGE_ID, { messages = () => null, feed = () => null, standby
 }
 
 function messengerWebhook({ attachmentHandler, textHandler, menuHandler, getContext, isCustomerService = () => false, customerServiceHandler = () => null}) {
-  if (attachmentHandler) 
+  if (!attachmentHandler) 
     throw new Error("Messenger Webhook: No attachmentHandler is set");
-  if (textHandler) 
+  if (!textHandler) 
     throw new Error("Messenger Webhook: No textHandler is set");
-  if (menuHandler) 
+  if (!menuHandler) 
     throw new Error("Messenger Webhook: No menuHandler is set");
-  if (getContext) 
+  if (!getContext) 
     throw new Error("Messenger Webhook: No getContext is set");
 
   return data => {
