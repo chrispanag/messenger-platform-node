@@ -11,7 +11,7 @@ function webhook(FB_PAGE_ID, { messages = () => null, feed = () => null, standby
     
     // Send message to metrics
     logIncoming(data);
-
+    
     if (data.object === 'page') {
       data.entry.forEach(entry => {
         // Messaging Standard Channel
@@ -64,7 +64,6 @@ function messengerWebhook({ attachmentHandler, textHandler, menuHandler, getCont
     throw new Error("Messenger Webhook: No getContext is set");
 
   return data => {
-    console.log(data);
     return getContext(data).then(messaging => {
       const id = messaging.sender.id;
       if (isCustomerService(messaging))

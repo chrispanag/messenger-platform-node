@@ -135,7 +135,7 @@ class FB extends FBApi {
     });
   }
 
-  handover(id, { target_app_id = 263902037430900, metadata = "" }) {
+  handover(id, target_app_id = 263902037430900, metadata = "") {
     const body = JSON.stringify({
       recipient: {
         id
