@@ -80,12 +80,14 @@ function listElement ({title, subtitle, image_url, action = null, buttons = null
 }
 
 // elements is an array of
-function cardMessage (elements) {
+function cardMessage (elements, image_aspect_ratio = "horizontal", sharable = "false") {
   return {
     type: "template",
     payload: {
       template_type: "generic",
-      elements
+      elements,
+      image_aspect_ratio,
+      sharable
     }
   };
 }
