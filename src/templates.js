@@ -107,6 +107,22 @@ function listMessage ({elements, buttons = null, large = false}) {
   };
 }
 
+function mediaMessage (attachment_id, buttons = null) {
+  return {
+    type: "template",
+    payload: {
+      template_type: 'media',
+      elements: [
+        {
+          media_type: "image",
+          attachment_id,
+          buttons
+        }
+      ]
+    }
+  };
+}
+
 module.exports = {
   image,
   callBtn,
@@ -117,5 +133,6 @@ module.exports = {
   cardMessage,
   urlBtn,
   postbackBtn,
-  buttonMessage
+  buttonMessage,
+  mediaMessage
 }
