@@ -132,6 +132,11 @@ class FB extends FBApi {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body
+    }).then(rsp => rsp.json())
+    .then(json => {
+      if (json.error && json.error.message) 
+        throw new Error(json.error.message);
+      return json;
     });
   }
 
@@ -147,6 +152,11 @@ class FB extends FBApi {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body
+    }).then(rsp => rsp.json())
+    .then(json => {
+      if (json.error && json.error.message) 
+        throw new Error(json.error.message);
+      return json;
     });
   }
 
