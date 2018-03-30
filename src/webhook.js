@@ -17,9 +17,13 @@ function webhook(FB_PAGE_ID, { messages = () => null, feed = () => null, standby
         // Messaging Standard Channel
         if (entry.messaging) {
           entry.messaging.forEach(e => {
-            if (e.recipient.id == FB_PAGE_ID) 
-              messages(e);
-            else 
+            if (e.recipient.id == FB_PAGE_ID) {
+              if (e.pass_thread_control) {
+                console.log("Passed Thread Control");
+              } else {
+                messages(e);
+              }
+            } else 
               console.log("Message from other page");
           });
           return;
