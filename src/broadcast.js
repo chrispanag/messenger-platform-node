@@ -2,7 +2,9 @@ const fetch = require('node-fetch');
 
 const baseOptions = {
     method: 'POST',
-    "Content-Type": 'application/json'
+    headers: {
+        "Content-Type": 'application/json'
+    }
 }
 
 function validateJson(json) {
