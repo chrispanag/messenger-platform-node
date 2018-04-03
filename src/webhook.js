@@ -2,7 +2,7 @@
   Webhook Function 
 */
 
-function webhook(FB_PAGE_ID, { messages = () => null, feed = () => null, standby = () => null }, logIncoming = () => null) {
+function webhook(FB_PAGE_ID, { messages = () => null, feed = () => null, standby = () => null, threadControl = () => null }, logIncoming = () => null) {
   if (!FB_PAGE_ID) 
     throw new Error("Missing FB_PAGE_ID");
 
@@ -11,15 +11,15 @@ function webhook(FB_PAGE_ID, { messages = () => null, feed = () => null, standby
     
     // Send message to metrics
     logIncoming(data);
-    
+
     if (data.object === 'page') {
       data.entry.forEach(entry => {
         // Messaging Standard Channel
         if (entry.messaging) {
           entry.messaging.forEach(e => {
             if (e.recipient.id == FB_PAGE_ID) {
-              if (e.pass_thread_control) {
-                console.log("Passed Thread Control");
+              if (e.pass_thread_control || e.take_thread_control || e.request_thread_control || e.app_roles) {
+                threadControl(e);
               } else {
                 messages(e);
               }
