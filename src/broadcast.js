@@ -94,7 +94,7 @@ function sendMessage(qs, message, label) {
     const data = {
         message_creative_id: message
     }
-    if(label) options.custom_label_id = label;
+    if(label) data.custom_label_id = label;
     const options = Object.assign({}, baseOptions, {
         body: JSON.stringify(data)
     });
