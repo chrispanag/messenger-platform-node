@@ -13,7 +13,9 @@ function validateJson(json) {
 
 function estimateBroadcast(qs, labelId) {
     const options = Object.assign({}, baseOptions);
-    if(label) options.custom_label_id = labelId;
+    if(label) options.body = {
+        custom_label_id: labelId
+    }
     return fetch(`https://graph.facebook.com/v2.11/me/broadcast_reach_estimations?${qs}}`, options)
     .then(rsp => rsp.json())
     .then(json => {
@@ -27,7 +29,9 @@ function estimateBroadcast(qs, labelId) {
 
 function createLabel(qs, name) {
     const options = Object.assign({}, baseOptions, {
-        name
+        body: {
+            name
+        }
     });
     return fetch(`https://graph.facebook.com/v2.11/me/custom_labels?${qs}`, options)
     .then(rsp => rsp.json())
@@ -36,7 +40,9 @@ function createLabel(qs, name) {
 
 function associateToLabel(qs, PSID, labelId) {
     const options = Object.assign({}, baseOptions, {
-        user: PSID
+        body: {
+            user: PSID
+        }
     });
     return fetch(`https://graph.facebook.com/v2.11/${labelId}/label?${qs}`, options)
     .then(rsp => rsp.json())
@@ -45,8 +51,10 @@ function associateToLabel(qs, PSID, labelId) {
 
 function removeLabel(qs, PSID, labelId) {
     const options = Object.assign({}, baseOptions, {
-        user: PSID,
-        method: 'DELETE'
+        method: 'DELETE',
+        body: {
+            user: PSID,
+        }
     });
     return fetch(`https://graph.facebook.com/v2.11/${labelId}/label?${qs}`, options)
     .then(rsp => rsp.json())
@@ -71,9 +79,11 @@ function getAllLabels(qs) {
 
 function createMessage(qs, message) {
     const options = Object.assign({}, baseOptions, {
-        message: [
-            message
-        ]
+        body: {
+            message: [
+                message
+            ]
+        }
     });
     return fetch(`https://graph.facebook.com/v2.11/me/message_creatives?${qs}`, options)
     .then(rsp => rsp.json())
@@ -82,7 +92,9 @@ function createMessage(qs, message) {
 
 function sendMessage(qs, message, label) {
     const options = Object.assign({}, baseOptions);
-    if(label) options.custom_label_id = label;
+    if(label) options.body = {
+        custom_label_id: labelId
+    }
     return fetch(`https://graph.facebook.com/v2.11/me/broadcast_messages?${qs}`, options)
     .then(rsp => rsp.json())
     .then(json => validateJson(json)); 

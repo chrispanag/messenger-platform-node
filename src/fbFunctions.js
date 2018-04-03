@@ -162,7 +162,18 @@ class FB extends FBApi {
   
   //broadcast messages
   createBroadcastMessage(message) {
-    return broadcast.createMessage(this._qs, message);
+    let {text = null, quickreplies = null, attachment = null, templateID = null, tag = null, notification = "REGULAR", type = "RESPONSE"} = message;
+    if (!(typeof options === "object"))
+      text = options, quickreplies = null, attachment = null, templateID = null, tag = null, notification = "REGULAR", type = "RESPONSE";
+      
+    if (!id)
+      throw new Error("fbMessage: No user id is specified!");
+
+    if (!(text || attachment))
+      throw new Error("fbMessage: No message content is specified!");
+
+    const formatedMessage = messageBuilder(id, text, quickreplies, attachment, tag, notification, type); // Set the body of the message
+    return broadcast.createMessage(this._qs, formatedMessage);
   }
 
   broadcastMessage(messageId, label) {
