@@ -12,7 +12,7 @@ function validateJson(json) {
 }
 
 function estimateBroadcast(qs, labelId) {
-    const options = { ...baseOptions };
+    const options = Object.assign({}, baseOptions);
     if(label) options.custom_label_id = labelId;
     return fetch(`https://graph.facebook.com/v2.11/me/broadcast_reach_estimations?access_token=${qs}}`, options)
     .then(rsp => rsp.json())
@@ -26,29 +26,29 @@ function estimateBroadcast(qs, labelId) {
 }
 
 function createLabel(qs, name) {
-    return fetch(`https://graph.facebook.com/v2.11/me/custom_labels?access_token=${qs}`, {
-        ...baseOptions,
+    const options = Object.assign({}, baseOptions, {
         name
-    })
+    });
+    return fetch(`https://graph.facebook.com/v2.11/me/custom_labels?access_token=${qs}`, options)
     .then(rsp => rsp.json())
     .then(json => validateJson(json));
 }
 
 function associateToLabel(qs, PSID, labelId) {
-    return fetch(`https://graph.facebook.com/v2.11/${labelId}/label?access_token=${qs}`, {
-        ...baseOptions,
+    const options = Object.assign({}, baseOptions, {
         user: PSID
-    })
+    });
+    return fetch(`https://graph.facebook.com/v2.11/${labelId}/label?access_token=${qs}`, options)
     .then(rsp => rsp.json())
     .then(json => validateJson(json));
 }
 
 function removeLabel(qs, PSID, labelId) {
-    return fetch(`https://graph.facebook.com/v2.11/${labelId}/label?access_token=${qs}`, {
-        ...baseOptions,
+    const options = Object.assign({}, baseOptions, {
         user: PSID,
         method: 'DELETE'
-    })
+    });
+    return fetch(`https://graph.facebook.com/v2.11/${labelId}/label?access_token=${qs}`, options)
     .then(rsp => rsp.json())
     .then(json => validateJson(json)); 
 }
@@ -81,7 +81,7 @@ function createMessage(qs, message) {
 }
 
 function sendMessage(qs, message, label) {
-    const options = { ...baseOptions }
+    const options = Object.assign({}, baseOptions);
     if(label) options.custom_label_id = label;
     return fetch(`https://graph.facebook.com/v2.11/me/broadcast_messages?access_token=${qs}`, options)
     .then(rsp => rsp.json())
