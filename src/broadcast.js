@@ -40,9 +40,9 @@ function createLabel(qs, name) {
 
 function associateToLabel(qs, PSID, labelId) {
     const options = Object.assign({}, baseOptions, {
-        body: {
+        body: JSON.stringify({
             user: PSID
-        }
+        })
     });
     return fetch(`https://graph.facebook.com/v2.11/${labelId}/label?${qs}`, options)
     .then(rsp => rsp.json())
