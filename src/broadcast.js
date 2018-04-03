@@ -91,9 +91,12 @@ function createMessage(qs, message) {
 }
 
 function sendMessage(qs, message, label) {
-    const options = Object.assign({}, baseOptions);
-    if(label) options.body = JSON.stringify({
-        custom_label_id: labelId
+    const data = {
+        message_creative_id: message
+    }
+    if(label) options.custom_label_id = label;
+    const options = Object.assign({}, baseOptions, {
+        body: JSON.stringify(data)
     });
     return fetch(`https://graph.facebook.com/v2.11/me/broadcast_messages?${qs}`, options)
     .then(rsp => rsp.json())
