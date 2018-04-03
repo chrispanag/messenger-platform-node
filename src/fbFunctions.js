@@ -2,7 +2,7 @@
 const fetch = require('node-fetch');
 const promiseDelay = require('promise-delay');
 const autoBind = require('auto-bind-inheritance');
-
+const broadcast = require('./broadcast');
 const FBApi = require('./facebookAPI');
 
 const defaultFieldsUserData = [
@@ -158,6 +158,27 @@ class FB extends FBApi {
         throw new Error(json.error.message);
       return json;
     });
+  }
+  
+  //broadcast messages
+  createBroadcastMessage(message) {
+    return broadcast.createMessage(this._qs, message);
+  }
+
+  broadcastMessage(messageId, label) {
+    return broadcast.sendMessage(this._qs, messageId, label);
+  }
+  
+  createLabel(name) {
+    return broadcast.createLabel(this._qs, name)
+  }
+
+  associateToLabel(id, labelId) {
+    return broadcast.associateToLabel(this._qs, id, labelId)
+  }
+
+  removeLabel(id, labelId) {
+    return broadcast.removeLabel(this._qs, id, labelId);
   }
 
 }
