@@ -163,7 +163,7 @@ class FB extends FBApi {
   //broadcast messages
   createBroadcastMessage(message) {
     let {text = null, quickreplies = null, attachment = null, templateID = null, tag = null, notification = "REGULAR", type = "RESPONSE"} = message;
-    if (!(typeof options === "object"))
+    if (!(typeof message === "object"))
       text = options, quickreplies = null, attachment = null, templateID = null, tag = null, notification = "REGULAR", type = "RESPONSE";
       
     if (!id)
