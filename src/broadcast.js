@@ -70,12 +70,12 @@ function getAllLabels(qs) {
 }
 
 function createMessage(qs, message) {
-    return fetch(`https://graph.facebook.com/v2.11/me/message_creatives?access_token=${qs}`, {
-        ...options,
-        messages: [
+    const options = Object.assign({}, baseOptions, {
+        message: [
             message
         ]
-    })
+    });
+    return fetch(`https://graph.facebook.com/v2.11/me/message_creatives?access_token=${qs}`, options)
     .then(rsp => rsp.json())
     .then(json => validateJson(json));
 }
