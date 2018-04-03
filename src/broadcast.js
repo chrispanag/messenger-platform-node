@@ -80,7 +80,7 @@ function getAllLabels(qs) {
 function createMessage(qs, message) {
     const options = Object.assign({}, baseOptions, {
         body: JSON.stringify({
-            message: [
+            messages: [
                 message
             ]
         })
