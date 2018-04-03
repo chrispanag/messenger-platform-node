@@ -165,9 +165,6 @@ class FB extends FBApi {
     let {text = null, quickreplies = null, attachment = null, templateID = null, tag = null, notification = "REGULAR", type = "RESPONSE"} = message;
     if (!(typeof message === "object"))
       text = options, quickreplies = null, attachment = null, templateID = null, tag = null, notification = "REGULAR", type = "RESPONSE";
-      
-    if (!id)
-      throw new Error("fbMessage: No user id is specified!");
 
     if (!(text || attachment))
       throw new Error("fbMessage: No message content is specified!");
