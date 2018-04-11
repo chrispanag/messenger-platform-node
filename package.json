@@ -13,6 +13,7 @@
     "auto-bind-inheritance": "^1.0.6",
     "dashbot": "*",
     "node-fetch": "*",
-    "promise-delay": "*"
+    "promise-delay": "*",
+    "form-data": "*"
   }
 }
