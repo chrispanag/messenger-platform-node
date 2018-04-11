@@ -9,12 +9,10 @@ function attachmentUploadFactory(FB_PAGE_TOKEN) {
             throw new Error(`[Error] Error reading file Attachment Upload: ${err}`);
         });
         const config = {
-            message: {
-                attachment: {
-                    type,
-                    payload: {
-                        is_reusable
-                    }
+            attachment: {
+                type,
+                payload: {
+                    is_reusable
                 }
             }
         }
@@ -25,11 +23,11 @@ function attachmentUploadFactory(FB_PAGE_TOKEN) {
             method: 'POST',
             body: form
         })
-        .then(res => res.json())
-        .catch(err => {
-            console.log('[Error] Uploading Attachment');
-            console.log(err);
-        });
+            .then(res => res.json())
+            .catch(err => {
+                console.log('[Error] Uploading Attachment');
+                console.log(err);
+            });
     }
 
 }
