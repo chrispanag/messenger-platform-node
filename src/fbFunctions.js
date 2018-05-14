@@ -181,6 +181,42 @@ class FB extends FBApi {
     return broadcast.removeLabel(this._qs, id, labelId);
   }
 
+  // Statistics FB Insights
+  // NOTE: NEEDS Review TODO
+  // @ since : Unix Timestamp
+  // @ until : Unix Timestamp
+  insights(metrics = [], since = null, until = null) {
+    let metrics_array = [
+      'page_messages_total_messaging_connections',
+      'page_messages_new_conversations_unique',
+      'page_messages_active_threads_unique',
+      'page_messages_blocked_conversations_unique',
+      'page_messages_reported_conversations_unique',
+      'page_messages_reported_conversations_by_report_type_unique'
+    ];
+    if (metrics.length > 0)
+      metrics_array = metrics;
+
+    const query = metrics_array.join();
+
+    let since_param = '';
+    if (since)
+      since_param = `&since=${since}`;
+    let until_param = '';
+    if (until)
+      until_param = `&until=${until}`;
+
+    return fetch(`https://graph.facebook.com/v2.8/me/insights/?metric=${query}${since_param}${until_param}&${this._qs}`, {
+      method: 'GET'
+    })
+    .then(rsp => rsp.json())
+    .then(json => {
+      if (json.error && json.error.message)
+        throw new Error(json.error.message);
+
+      return json;
+    });
+  }
 }
 
 module.exports = {
