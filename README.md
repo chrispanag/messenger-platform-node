@@ -8,7 +8,7 @@ This is a NodeJS module with Functions for accessing FB API (Send API mostly)
 1) Install the module with `npm`
 2) Require the module and construct the library
   ```
-  const { FB } = require('fblib');
+  const { FB } = require('messenger-platform-node');
   const fb = new FB(FB_PAGE_TOKEN, FB_APP_SECRET, logger);
   ```
 
@@ -90,6 +90,6 @@ Takes thread control of the user with the PSID `id`. Returns a *promise*.
 * `webhook (messenger, FB_PAGE_ID);`
 * `messengerWebhook ({attachmentHandler, textHandler, menuHandler, getContext, isCustomerService});`
 
-[travis-image]:https://travis-ci.org/chrispanag/Messenger-Platform-Lib.svg?branch=master
-[travis-url]:https://travis-ci.org/chrispanag/Messenger-Platform-Lib
+[travis-image]:https://travis-ci.org/chrispanag/messenger-platform-node.svg?branch=master
+[travis-url]:https://travis-ci.org/chrispanag/messenger-platform-node
 

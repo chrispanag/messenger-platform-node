@@ -1,5 +1,5 @@
 {
-  "name": "fblib",
+  "name": "messenger-platform-node",
   "version": "1.0.0",
   "description": "A module with functions for accessing Messenger-related FB API hooks.",
   "main": "index.js",
@@ -15,7 +15,7 @@
     "send-api"
   ],
   "author": "Christos Panagiotakopoulos <chrispanag@gmail.com>",
-  "repository": "chrispanag/Messenger-Platform-Lib",
+  "repository": "chrispanag/messenger-platform-node",
   "license": "MIT",
   "dependencies": {
     "auto-bind": "^1.2.0",
