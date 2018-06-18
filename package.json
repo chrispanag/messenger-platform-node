@@ -2,7 +2,7 @@
   "name": "fblib",
   "version": "1.0.0",
   "description": "A module with functions for accessing Messenger-related FB API hooks.",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "test": "node ./tests/test.js"
   },
