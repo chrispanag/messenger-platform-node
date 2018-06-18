@@ -1,13 +1,22 @@
 {
   "name": "fblib",
   "version": "1.0.0",
-  "description": "",
+  "description": "A module with functions for accessing Messenger-related FB API hooks.",
   "main": "app.js",
   "scripts": {
     "test": "node ./tests/test.js"
   },
-  "author": "Christos Panagiotakopoulos",
-  "license": "ISC",
+  "keywords": [
+    "bot",
+    "chatbot",
+    "messenger-platform",
+    "messenger",
+    "facebook",
+    "send-api"
+  ],
+  "author": "Christos Panagiotakopoulos <chrispanag@gmail.com>",
+  "repository": "chrispanag/Messenger-Platform-Lib",
+  "license": "MIT",
   "dependencies": {
     "auto-bind": "^1.2.0",
     "auto-bind-inheritance": "^1.0.6",
@@ -15,5 +24,14 @@
     "node-fetch": "*",
     "promise-delay": "*",
     "form-data": "*"
-  }
+  },
+  "engines": {
+    "node": ">= 6"
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "app.js",
+    "src/"
+  ]
 }
