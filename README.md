@@ -1,4 +1,4 @@
-# Messenger Platform Lib #
+# messenger-platform-node #
 
 This is a NodeJS module with Functions for accessing FB API (Send API mostly)
 
