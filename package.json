@@ -18,12 +18,11 @@
   "repository": "chrispanag/messenger-platform-node",
   "license": "MIT",
   "dependencies": {
-    "auto-bind": "^1.2.0",
+    "auto-bind": "^1.2.1",
     "auto-bind-inheritance": "^1.0.6",
-    "dashbot": "*",
-    "node-fetch": "*",
-    "promise-delay": "*",
-    "form-data": "*"
+    "node-fetch": "^2.6.0",
+    "promise-delay": "^2.1.0",
+    "form-data": "3.0.0"
   },
   "engines": {
     "node": ">= 6"
