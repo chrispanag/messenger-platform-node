@@ -20,7 +20,7 @@
   "dependencies": {
     "auto-bind": "^1.2.1",
     "auto-bind-inheritance": "^1.0.6",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "promise-delay": "^2.1.0",
     "form-data": "3.0.0"
   },
